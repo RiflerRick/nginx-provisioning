@@ -61,6 +61,7 @@ pipeline {
                 sh '''
                 #!/bin/bash
                 echo "testing nginx server using public ip address"
+                ssh -tty jenkins@10.190.0.3 << EOF
                 extIP=$(gcloud compute instances describe nginx-server --zone=asia-south2-a --format="yaml(networkInterfaces[0].accessConfigs[0].natIP)" | grep natIP | cut -d ':' -f 2 | sed "s/ //g")
                 curl $extIP
                 status_code=$(curl --connect-timeout 5 -s -o /dev/null -w "%{http_code}" $extIP)
@@ -69,6 +70,8 @@ pipeline {
                 exit 1
                 fi
                 exit 0
+                EOF
+                
                 '''
             }
         }
