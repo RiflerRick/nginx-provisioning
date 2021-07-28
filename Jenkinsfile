@@ -47,7 +47,8 @@ pipeline {
                 cd nginx-ansible
                 git pull origin main
                 fi
-                python3 generate_hosts_file.py
+                intIP=$(gcloud compute instances describe nginx-server --zone=asia-south2-a --format="yaml(networkInterfaces[0].networkIP)" | grep networkIP | cut -d ':' -f 2 | sed "s/ //g")
+                python3 generate_hosts_file.py $intIP
                 ansible-playbook -i hosts webservers.yml
                 exit 0
                 EOF
