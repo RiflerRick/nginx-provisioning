@@ -1,9 +1,9 @@
 @Library('jenkins-shared-library@main') _
 properties([
     parameters([
-        integerParam(
+        string(
             name: 'NUMBER',
-            defaultValue: 1,
+            defaultValue: '1',
             description: 'just any number will do'
             ),
     ])
