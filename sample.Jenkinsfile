@@ -1,7 +1,7 @@
 @Library('jenkins-shared-library@main') _
 properties([
     parameters([
-        string(
+        int(
             name: 'NUMBER',
             defaultValue: 1,
             description: 'just any number will do'
