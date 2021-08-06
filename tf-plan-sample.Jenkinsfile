@@ -1,15 +1,24 @@
 
     pipeline {
         agent any
-        triggers { pollSCM('* * * * *') }
         stages {
+            stage('Checkout') {
+                steps {
+                    dir("workdir") {
+                        checkout scm: [$class: 'GitSCM',
+                            userRemoteConfigs: [[url: 'https://github.com/RiflerRick/nginx-terraform.git']],
+                                                branches: [[name: 'refs/heads/main']]
+                            ], poll: true
+                    }
+                    
+                }
+            }
             stage('Setup') {
                 steps {
                         script {
-                            dir("workdir") {
-                                git url: "https://github.com/RiflerRick/nginx-terraform.git", branch: "main"
+                            environment { 
+                                GITHUB_PAT = credentials('GITHUB_PAT') 
                             }
-                            
                             sh '''
                             #!/bin/bash
                             curl -u riflerrick:$GITHUB_PAT  -X POST -H "Accept: application/vnd.github.v3+json"  https://api.github.com/repos/riflerrick/nginx-terraform/statuses/$GIT_COMMIT -d '{"state":"pending","target_url":"$BUILD_URL","context":"jenkins-tf-validation"}'
