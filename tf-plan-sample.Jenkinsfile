@@ -43,8 +43,15 @@
                 steps {
                     script {
                         dir("workdir") {
-                            sh 'terraform plan'
+                            withCredentials([file(credentialsId: 'global-image-sharing-svc-account-key', variable: 'svc-account-key')]) {
+                                writeFile file: 'svc-account-key.json', text: readFile(svc-account-key)
+                                sh '''
+                                #!/bin/bash
+                                terraform plan
+                                '''
+                            }
                         }
+                        
 
                         timeout(time: 1, unit: 'HOURS') {
                             input(id: 'confirm', message: 'Apply Terraform?')
