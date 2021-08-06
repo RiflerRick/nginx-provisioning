@@ -16,16 +16,16 @@
             stage('Setup') {
                 steps {
                         script {
-                            environment { 
-                                GITHUB_PAT = credentials('GITHUB_PAT') 
+                            withCredentials(string(credentialsId: 'GITHUB_PAT', variable: 'GITHUB_PAT')]) {
+                                sh '''
+                                #!/bin/bash
+                                curl -u riflerrick:$GITHUB_PAT  -X POST -H "Accept: application/vnd.github.v3+json"  https://api.github.com/repos/riflerrick/nginx-terraform/statuses/$GIT_COMMIT -d '{"state":"pending","target_url":"$BUILD_URL","context":"jenkins-tf-validation"}'
+                                '''
                             }
-                            sh '''
-                            #!/bin/bash
-                            curl -u riflerrick:$GITHUB_PAT  -X POST -H "Accept: application/vnd.github.v3+json"  https://api.github.com/repos/riflerrick/nginx-terraform/statuses/$GIT_COMMIT -d '{"state":"pending","target_url":"$BUILD_URL","context":"jenkins-tf-validation"}'
-                            '''
+                            
 
                             dir("workdir") {
-                                sh ''''
+                                sh '''
                                 #!/bin/bash
                                 terraform init
                                 '''
