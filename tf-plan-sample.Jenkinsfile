@@ -31,10 +31,9 @@
 
                             dir("workdir") {
                                 withCredentials([file(credentialsId: 'global-image-sharing-svc-account-key', variable: 'svc_account_key')]) {
-                                    
+                                    writeFile file: 'svc-account-key.json', text: readFile(svc_account_key)
                                     sh '''
                                     #!/bin/bash
-                                    mv svc_account_key svc-account-key.json
                                     terraform init
                                     '''
                                 }
@@ -48,10 +47,9 @@
                     script {
                         dir("workdir") {
                             withCredentials([file(credentialsId: 'global-image-sharing-svc-account-key', variable: 'svc_account_key')]) {
-                                
+                                writeFile file: 'svc-account-key.json', text: readFile(svc_account_key)
                                 sh '''
                                 #!/bin/bash
-                                mv svc_account_key svc-account-key.json
                                 terraform plan
                                 '''
                             }
